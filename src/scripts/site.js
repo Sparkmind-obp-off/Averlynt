@@ -115,6 +115,9 @@
       credentials: 'same-origin',
       headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
     });
+    // 401 means the token is stale or not ours: treat it as signed out, not as a crash.
+    if (response.status === 401) return { signedIn: false, stale: true };
+    // 503 means the verifier itself is unavailable; that is worth surfacing.
     if (!response.ok) throw new Error(`session ${response.status}`);
     return response.json();
   };

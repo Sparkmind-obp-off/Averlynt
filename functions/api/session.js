@@ -119,22 +119,63 @@ const bearer = (request) => {
   return header.startsWith('Bearer ') ? header.slice(7).trim() : '';
 };
 
+/**
+ * Maps an internal verification failure to a stable, non-leaking code.
+ * The raw error message never leaves the Worker: it can contain parser output
+ * from a caller-supplied token, which would echo attacker-controlled bytes.
+ */
+const failureCode = (message) => {
+  const text = String(message || '');
+  if (/jwks/i.test(text)) return 'unavailable';
+  if (/expired/.test(text)) return 'expired';
+  if (/not yet valid/.test(text)) return 'not_yet_valid';
+  if (/issuer/.test(text)) return 'wrong_issuer';
+  if (/party/.test(text)) return 'wrong_party';
+  if (/no subject/.test(text)) return 'no_subject';
+  if (/alg|signature|key|token|malformed/i.test(text)) return 'invalid_token';
+  return 'invalid_token';
+};
+
 export async function onRequestGet({ request, env }) {
+  const header = request.headers.get('Authorization') || '';
+
+  // Credentials were offered but the scheme is not Bearer: reject explicitly.
+  // This is checked BEFORE the empty-token shortcut, otherwise a non-Bearer
+  // header would silently fall through to a signed-out 200.
+  if (header && !header.startsWith('Bearer ')) {
+    return json({ signedIn: false, error: 'invalid_authorization_scheme' }, 401, {
+      'WWW-Authenticate': 'Bearer',
+    });
+  }
+
   const token = bearer(request);
+
+  // No credentials at all is a normal state, not an error.
   if (!token) return json({ signedIn: false });
 
+  let payload;
   try {
-    const payload = await verifyToken(token, env);
-    const user = await fetchProfile(payload.sub, env);
-    return json({
+    payload = await verifyToken(token, env);
+  } catch (error) {
+    const code = failureCode(error && error.message);
+    // A JWKS fetch failure is our problem, not the caller's → 503, not 401.
+    const status = code === 'unavailable' ? 503 : 401;
+    return json({ signedIn: false, verified: false, error: code }, status, {
+      'WWW-Authenticate': 'Bearer error="invalid_token"',
+    });
+  }
+
+  const user = await fetchProfile(payload.sub, env);
+  return json(
+    {
       signedIn: true,
       verified: true,
       profile: Boolean(user),
       user: user || { id: payload.sub, name: '', email: '' },
-    });
-  } catch (error) {
-    return json({ signedIn: false, verified: false, reason: String(error.message || error) });
-  }
+    },
+    200,
+    { 'Cache-Control': 'no-store, private' },
+  );
 }
 
 export async function onRequestDelete() {
