@@ -1,0 +1,16 @@
+{
+  "name": "averlynt-web",
+  "version": "0.2.0",
+  "private": true,
+  "description": "AVERLYNT brand and public website. Zero-dependency static site for Cloudflare Pages.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "preview": "npm run build && npx wrangler pages dev dist --ip 0.0.0.0 --port 3000",
+    "deploy": "npm test && npm run build && npx wrangler pages deploy dist --project-name averlynt --branch main"
+  }
+}
