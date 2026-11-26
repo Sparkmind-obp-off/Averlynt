@@ -14,7 +14,7 @@ Situs ini adalah **situs brand + arah produk**, bukan klaim bahwa semua kapabili
 
 ```bash
 npm run build     # tulis ./dist (26 halaman + 404)
-npm test          # 33 tes node --test
+npm test          # 40 tes node --test
 npm run preview   # build lalu wrangler pages dev dist di :3000
 npm run deploy    # test + build + wrangler pages deploy dist --project-name averlynt --branch main
 ```
@@ -33,7 +33,7 @@ src/scripts/site.js      Nav mobile, reveal on-scroll, dan logika akun
 src/static/              Font OFL, logo SVG, favicon, ikon PNG, kartu OG
 scripts/build.mjs        Generator statis: hashed assets, _headers, _routes.json, sitemap, robots, manifest, 404
 functions/api/session.js Pages Function: verifikasi JWT Clerk di server
-tests/*.mjs              33 tes (build/route, link, a11y, SEO, CSP, kontras, konten, rahasia)
+tests/*.mjs              40 tes (build/route, link, a11y, SEO, CSP, kontras, konten, sesi, rahasia)
 tools/                   Generator aset brand (logo.py, assets.py)
 ```
 

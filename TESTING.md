@@ -3,13 +3,13 @@
 ## Ringkasan
 
 ```bash
-npm test        # node --test  → 33 tes
+npm test        # node --test  → 40 tes
 npm run build   # node scripts/build.mjs → dist
 ```
 
 Nol dependency. Tes memakai `node:test` + `node:assert/strict` bawaan Node ≥ 20, dan mem-build situs ke direktori sementara sekali (`tests/helpers.mjs`), jadi tes selalu menguji output build nyata — bukan fixture yang bisa basi.
 
-**Status terakhir: 33 tes, 33 lulus, 0 gagal.**
+**Status terakhir: 40 tes, 40 lulus, 0 gagal.**
 
 ## Pembagian berkas
 

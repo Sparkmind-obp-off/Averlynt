@@ -18,7 +18,7 @@ Rilis situs publik bilingual penuh, menggantikan halaman tunggal 0.1.0.
 - **Akun Clerk produksi** dengan verifikasi sisi server: `functions/api/session.js` memverifikasi JWT RS256 terhadap JWKS Clerk (`iss`, `azp`, `exp`, `nbf`, `sub`), lookup profil opsional, dan `DELETE` yang membersihkan cookie `__session` / `__client_uat`.
 - **Keamanan**: CSP ketat tanpa inline script/style, `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, `COOP`, HSTS; `_routes.json` membatasi Function hanya ke `/api/*`.
 - **SEO/platform**: `sitemap.xml` (24 URL, route `noindex` dikecualikan), `robots.txt`, `site.webmanifest`, canonical, OG/Twitter, JSON-LD `WebSite` minimal.
-- **Suite tes 33 kasus** (`node --test`, nol dependency) mencakup build/route, tautan, a11y, SEO, CSP, kontras AA, paritas konten, kejujuran status, dan pemindaian rahasia.
+- **Suite tes 40 kasus** (`node --test`, nol dependency) mencakup build/route, tautan, a11y, SEO, CSP, kontras AA, paritas konten, kejujuran status, dan pemindaian rahasia.
 - **Dokumentasi**: `README.md`, `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, `TESTING.md`, `CHANGELOG.md`.
 
 ### Changed
@@ -35,7 +35,7 @@ Rilis situs publik bilingual penuh, menggantikan halaman tunggal 0.1.0.
 
 ### Verified
 - Build: `Built 26 pages (+404)`.
-- Tes: 33/33 lulus.
+- Tes: 40/40 lulus.
 - QA Playwright (48 screenshot, 3 viewport): 0 console error, 0 overflow horizontal, 0 request pihak ketiga; menu mobile `aria-expanded` benar dan tertutup dengan Escape.
 
 ### Known limitations
